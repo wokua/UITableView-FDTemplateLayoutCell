@@ -249,7 +249,14 @@
 
 - (CGFloat)fd_heightForHeaderFooterViewWithIdentifier:(NSString *)identifier configuration:(void (^)(id))configuration {
     UITableViewHeaderFooterView *templateHeaderFooterView = [self fd_templateHeaderFooterViewForReuseIdentifier:identifier];
-    
+    /*
+       changed by ron
+       修复tableviewHeaderFooter计算高度失败问题
+       注意：布局需要布局到当前View上，而非contentView
+    */
+    if (configuration) {
+        configuration(templateHeaderFooterView);
+    }
     NSLayoutConstraint *widthFenceConstraint = [NSLayoutConstraint constraintWithItem:templateHeaderFooterView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:CGRectGetWidth(self.frame)];
     [templateHeaderFooterView addConstraint:widthFenceConstraint];
     CGFloat fittingHeight = [templateHeaderFooterView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
